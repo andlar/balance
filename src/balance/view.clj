@@ -1,32 +1,14 @@
-(ns balance.core
-  (:requre [seesaw.core :as sc]
-           [seesaw.graphics :as sg]
-           [seesaw.color :as scolor]
-           [seesaw.table :as st])
+(ns balance.view
+  (:require [seesaw.core :as sc]
+            [seesaw.graphics :as sg]
+            [seesaw.color :as scolor]
+            [seesaw.table :as st])
   (:import org.pushingpixels.substance.api.SubstanceLookAndFeel)
   (:gen-class))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (invoke-later
-   (->
-    (frame
-     :title "Balance"
-     :on-close :exit
-     :content (vertical-panel
-               :items [(label :text "When")
-                       (text :multi-line? true :text "From | To | What" :border 5)
-                       (horizontal-panel
-                        :border "What are you doing?"
-                        :items (map (partial button :text)
-                                    ["First" "Second" "Third"]))]))
-    pack!
-    show!)))
-
 ;;Config
 (def title "Balance")
-(def window-size {:width 600
+(def window-size {:width 800
                   :height 400})
 
 ;;Styling
@@ -54,10 +36,10 @@
 ;; canvases
 (def time-selector
   (sc/horizontal-panel
-   :items (map (partial button :text)
-                                    ["Primary Work" "Other Work" "Commute"
-                                     "Fun & Relaxing" "Exercise & Life Maintenance"
-                                     "Sleep"])))
+   :items (map (partial sc/button :text)
+               ["Primary Work" "Other Work" "Commute"
+                "Fun & Relaxing" "Exercise & Life Maintenance"
+                "Sleep"])))
 
 (def time-canvas
   (sc/canvas :id :timecanvas
