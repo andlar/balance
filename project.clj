@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [seesaw "1.4.2"]
+                 ;[clj-time "0.6.0"]
                  [com.github.insubstantial/substance "7.1"]]
 ;  :jvm-opts ["-Dswing.defaultlaf=org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel"]
   :main balance.devel)
