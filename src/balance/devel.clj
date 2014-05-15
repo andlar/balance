@@ -8,3 +8,6 @@
   (sc/show! view/main-window)
   (sc/native!)
   (SubstanceLookAndFeel/setSkin (.getClassName (get (SubstanceLookAndFeel/getAllSkins) "Sahara"))))
+
+(defn -main []
+  (show-gui))
