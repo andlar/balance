@@ -3,7 +3,7 @@
             [seesaw.graphics :as sg]
             [seesaw.color :as scolor]
             [seesaw.table :as st])
-  (:import org.pushingpixels.substance.api.SubstanceLookAndFeel)
+  ;(:import org.pushingpixels.substance.api.SubstanceLookAndFeel)
   (:gen-class))
 
 ;;Config
@@ -14,12 +14,19 @@
 (defn dec-string-cmp [s1 s2]
   (* -1 (compare s1 s2)))
 
+(defn- do-n [word n]
+  (take n (repeat word)))
+
+(defn- make-day [day-data & args]
+  (into [] (flatten (list day-data args))))
+
 ;; sample data
 (def data (sorted-map-by dec-string-cmp
-                         "2014-05-06" [:sleep :sleep :sleep :sleep :sleep :sleep :none :commute :primary :other :other :other :other :exercise :other :primary :commute :fun :fun :exercise :fun :fun :fun :sleep :sleep]
-                         "2014-05-05" [:sleep :sleep :sleep :sleep :sleep :sleep :none :none :primary :other :other :other :other :fun :other :primary :fun :fun :fun :exercise :fun :fun :fun :sleep :sleep]
-                         "2014-05-03" [:sleep :sleep :sleep :sleep :sleep :sleep :none :commute :primary :other :other :other :other :exercise :other :primary :commute :fun :fun :exercise :fun :fun :fun :sleep :sleep]
-                         "2014-05-04" [:sleep :sleep :sleep :sleep :sleep :sleep :none :none :primary :other :other :other :other :fun :other :primary :fun :fun :fun :exercise :fun :fun :fun :sleep :sleep]))
+                         "2014-05-06" (make-day (do-n :sleep 6) :life :commute :primary (do-n :other 4) :exercise :other :primary :commute (do-n :fun 6) :sleep)
+                         "2014-05-05" (make-day (do-n :sleep 6) (do-n :life 2) :primary (do-n :other 4) :fun :other :primary (do-n :fun 6) (do-n :sleep 2)) 
+                         "2014-05-03" [:sleep :sleep :sleep :sleep :sleep :sleep :life :commute :primary :other :other :other :other :exercise :other :primary :commute :fun :fun :exercise :fun :fun :fun :sleep :sleep]
+                         "2014-05-08" [:sleep :sleep :sleep :sleep :sleep :sleep :life :commute :commute :other :other :other :primary :primary :primary :primary :primary :commute :none :none :none :none :none :none]
+                         "2014-05-04" [:sleep :sleep :sleep :sleep :sleep :sleep :life :life :primary :other :other :other :other :fun :other :primary :fun :fun :fun :exercise :fun :fun :fun :sleep :sleep]))
 
 ;; actions definition
 (def actions {:primary  {:text "Primary Work"
@@ -34,7 +41,10 @@
               :fun      {:text "Fun & Relaxing"
                          :style (sg/style :foreground (scolor/color :yellow)
                                           :background (scolor/color :yellow))}
-              :exercise {:text "Exercise & Life"
+              :life     {:text "Life Maintenance"
+                         :style (sg/style :foreground (scolor/color :lightblue)
+                                          :background (scolor/color :lightblue))}
+              :exercise {:text "Exercise"
                          :style (sg/style :foreground (scolor/color :purple)
                                           :background (scolor/color :purple))}
               :sleep    {:text "Sleep"
@@ -49,7 +59,7 @@
 
 ;; create button
 (defn make-action-selector [action-dsc]
-  (sc/radio :id (key action-dsc)
+  (sc/radio :id (str (key action-dsc) "-radio")
              :text (:text (val action-dsc))
              :group action-bg))
 
@@ -78,12 +88,12 @@
             :height (:height window-size)
             :content window-content))
 
-(def box-size 20)
-
 ;;painting time
 (defn render-day [row col action]
-  [(sg/rect (* box-size col) (* box-size row) box-size box-size)
-   (:style (action actions))])
+  (let [box-width (/ (sc/width main-window) 24)
+        box-height 20]
+    [(sg/rect (* box-width col) (* box-height row) box-width box-height)
+     (:style (action actions))]))
 
 (defn render-time []
   (apply concat
@@ -93,7 +103,10 @@
 
 (defn paint-time [context graphics]
   (apply sg/draw graphics
-         (apply concat (render-time))))
+         (apply concat (render-time)))
+  (sg/draw graphics (sc/label :text "test text") (sg/style :foreground (scolor/color :darkgray)
+                                            :background (scolor/color :darkgray)
+                                            :font :monospace)))
 
 (defn repaint []
   (sc/repaint! time-canvas))
@@ -101,3 +114,15 @@
 ;;init
 (defn init-view []
   (sc/config! time-canvas :paint paint-time))
+
+
+;; data entry stuff; does this belong here?
+(defn- create-action [_ newaction]
+  (keyword newaction))
+
+(defn- update-action [date position action]
+  (update-in data [date position] create-action action))
+
+(defn update-action! [date position action]
+  (def data (update-action date position action))
+  (repaint))
