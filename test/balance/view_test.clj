@@ -1,4 +1,4 @@
-(ns balance.core-test
+(ns balance.view-test
   (:use clojure.test
         balance.view))
 
