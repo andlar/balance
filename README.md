@@ -1,5 +1,8 @@
 # Balance
 
+[![Build Status](https://travis-ci.org/andlar/balance.svg?branch=master)](https://travis-ci.org/andlar/balance)
+[![Coverage Status](https://coveralls.io/repos/andlar/balance/badge.png)](https://coveralls.io/r/andlar/balance)
+
 Balance displays your day(s) in colors, where each block represents one hour of time spent mainly doing one particular type of action (e.g., primary work, fun & relaxation, sleep, etc.). It averages your daily entries to show what your average day looks like, optionally only averaging work days, or weekends, or other ranges of time.
 
 Balance is an ativity tracker as well, with you marking when you start or stop a particular type of activity, and Balance will figure out what color any given block should then be marked with.
